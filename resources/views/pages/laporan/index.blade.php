@@ -32,17 +32,21 @@
         <div class="panel-heading">
             <h4 class="panel-title">Data Laporan</h4>
         </div>
-        <div class="panel-body">
+        <div class="panel-body table-responsive">
             <form method="POST" action="/laporan/filter">
                 @csrf
                 <div class="row">
-                    <div class="col-lg-2">
+                    <!-- <div class="col-lg-2">
                         <label> Dari tanggal </label>
                         <input type="date" class="form-control" name="dTgl" value="{{date('Y-m-d', strtotime(Session::get('dTgl')))}}">
                     </div>
                     <div class="col-lg-2">
                         <label> Sampai </label>
                         <input type="date" class="form-control" name="sTgl" value="{{date('Y-m-d', strtotime(Session::get('sTgl')))}}">
+                    </div> -->
+                    <div class="col-lg-2">
+                        <label> Tgl Bayar </label>
+                        <input type="date" class="form-control" name="tglBayar" value="{{date('Y-m-d', strtotime(Session::get('tglBayar')))}}">
                     </div>
                     <div class="col-lg-2">
                         <label> Perusahaan </label>
@@ -65,18 +69,19 @@
                 <a href="/laporan/1" target="_blank" class="form-control btn btn-info " id="Button"> Cetak </a>
             </div>
             <br><br> <br><br> <br><br>
-            <table class="table table-hover data-table">
+            <table class="table table-hover data-table" >
                 <thead>
                     <tr>
                         <th class="width-10">No.</th>
                         <th>Nama Perusahaan</th>
                         <th>Nama Pekerjaan</th>
-                        <th>Tgl Pekerjaan</th>
+                        <th>Tgl Pekerjaan</th>    
+                        <th>Tgl Pembayaran</th>
                         <th>Pemberi Kerja</th>
                         <th>Nilai</th>
                         <th>Ongkos</th>
+                        <th>DPP</th>
                         <th>PPN</th>
-                        <th>Nilai (PPN)</th>
                         <th>PPH</th>
                         <th>Internal</th>
                         <th>Lainnya</th>
@@ -134,6 +139,9 @@
                     "data": "tgl"
                 },
                 {
+                    "data": "tgl_pembayaran"
+                },
+                {
                     "data": "pemberi_kerja"
                 },
                 {
@@ -143,10 +151,10 @@
                     "data": "total"
                 },
                 {
-                    "data": "ppns"
+                    "data": "dpp"
                 },
                 {
-                    "data": "nilai_ppn"
+                    "data": "ppns"
                 },
                 {
                     "data": "pphs"
@@ -163,14 +171,14 @@
                 },
             ],
             "columnDefs": [{
-                    "targets": 5,
+                    "targets": 6,
                     "data": "nilai",
                     "render": function(data, type, row, meta) {
                         return formatUang(data);
                     }
                 },
                 {
-                    "targets": 11,
+                    "targets": 12,
                     "data": "lainnya",
                     "render": function(data, type, row, meta) {
                         return formatUang(data);

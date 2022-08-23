@@ -94,15 +94,15 @@
                             </tr>
                             <tr align="center">
                                 <td colspan="4">PPN</td>
-                                <td>{{number_format(($data->ppn/100)*$data->nilai)}}</td>
+                                <td>{{number_format(($data->ppn / (100+$data->ppn)) * $data->nilai)}}</td>
                             </tr>
                             <tr align="center">
                                 <td colspan="4">PPH</td>
-                                <td>{{number_format(($data->pph/100)*$data->nilai)}}</td>
+                                <td>{{number_format(($data->pph / (100+$data->ppn)) * $data->nilai)}}</td>
                             </tr>
                             <tr align="center">
                                 <td colspan="4">INTERNAL</td>
-                                <td>{{number_format(($data->internal/100)*$data->nilai)}}</td>
+                                <td>{{number_format(($data->internal / (100+$data->ppn)) * $data->nilai)}}</td>
                             </tr>
                             <tr align="center">
                                 <td colspan="4">LAINNYA</td>
@@ -110,7 +110,7 @@
                             </tr>
                             <tr align="center">
                                 <td colspan="4">SISA</td>
-                                <td>{{number_format($data->nilai-($total+(($data->ppn/100)*$data->nilai)+(($data->pph/100)*$data->nilai)+(($data->internal/100)*$data->nilai)+($data->lainnya)))}}</td>
+                                <td>{{number_format($data->nilai-($total+(($data->ppn / (100+$data->ppn)) * $data->nilai)+(($data->pph / (100+$data->ppn)) * $data->nilai)+(($data->internal / (100+$data->ppn)) * $data->nilai)+($data->lainnya)))}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -122,7 +122,7 @@
     </table>
     <script type="text/javascript">
         function cetak() {
-            // window.print();
+            window.print();
         };
     </script>
 

@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('plugins_styles')
-
+<link href="/assets/assets/plugins/parsley/src/parsley.css" rel="stylesheet" />
 @endsection
 
 @section('page_styles')
@@ -68,23 +68,31 @@
                         <div class="form-group">
                             <label class="control-label">Nilai</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" style="display: block;" value="{{ old('nilai',$pengadaan->nilai??'') }}" name="nilai" placeholder="Nilai Pekerjaan..." required>
+                                <input type="text" autocomplete="off" class="text-right decimal form-control" style="display: block;" value="{{ old('nilai',$pengadaan->nilai??'0') }}" name="nilai" placeholder="Nilai Pekerjaan..." required>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label class="control-label">Lainnya</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" style="display: block;" value="{{ old('lainnya',$pengadaan->lainnya??'') }}" name="lainnya" placeholder="Lainnya Pekerjaan..." required>
+                                <input type="text" autocomplete="off" class="text-right decimal form-control" style="display: block;" value="{{ old('lainnya',$pengadaan->lainnya??'0') }}" name="lainnya" placeholder="Lainnya Pekerjaan..." required>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label class="control-label">Tanggal Pekerjaan</label>
                             <div class="input-group">
                                 <input type="date" class="form-control" value="{{ old('tgl',date('Y-m-d',strtotime($pengadaan->tgl??date('d-m-Y')))??date('Y-m-d')) }}" name="tgl" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Tanggal Pembayaran</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" value="{{ old('tgl_pembayaran',date('Y-m-d',strtotime($pengadaan->tgl_pembayaran??date('d-m-Y')))??date('Y-m-d')) }}" name="tgl_pembayaran" required>
                             </div>
                         </div>
                     </div>
@@ -106,7 +114,12 @@
 @endsection
 
 @section('page_scripts')
+<script src="/assets/assets/plugins/parsley/dist/parsley.js"></script>
+<script src="/assets/assets/plugins/autonumeric/autoNumeric.js"></script>
 <script>
-
+      AutoNumeric.multiple('.decimal', {
+        modifyValueOnWheel : false,
+        minimumValue: "0"
+    });
 </script>
 @endsection

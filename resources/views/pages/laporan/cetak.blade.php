@@ -33,7 +33,7 @@
             </center>
             <br>
             <center>
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <tr>
                         <td style="text-align: center;" width="3%"><b>No.</b></td>
                         <td style="text-align: center;"><b>Nama Perusahaan</b></td>
@@ -42,6 +42,7 @@
                         <td style="text-align: center;"><b>Pemberi Kerja</b></td>
                         <td style="text-align: center;"><b>Nilai</b></td>
                         <td style="text-align: center;"><b>Ongkos</b></td>
+                        <td style="text-align: center;"><b>DPP</b></td>
                         <td style="text-align: center;"><b>PPN</b></td>
                         <td style="text-align: center;"><b>PPH</b></td>
                         <td style="text-align: center;"><b>Internal</b></td>
@@ -67,11 +68,12 @@
                         <td style="text-align: center;">{{number_format($dt->nilai)}}</td>
 
                         <td style="text-align: center;">{{number_format($total)}}</td>
-                        <td style="text-align: center;">{{number_format(($dt->ppn/100)*$dt->nilai)}}</td>
-                        <td style="text-align: center;">{{number_format(($dt->pph/100)*$dt->nilai)}}</td>
-                        <td style="text-align: center;">{{number_format(($dt->internal/100)*$dt->nilai)}}</td>
+                        <td style="text-align: center;">{{number_format((100/(100+$dt->ppn))*$dt->nilai)}}</td>
+                        <td style="text-align: center;">{{number_format(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)}}</td>
+                        <td style="text-align: center;">{{number_format(($dt->pph / (100+$dt->ppn)) * $dt->nilai)}}</td>
+                        <td style="text-align: center;">{{number_format(($dt->internal / (100+$dt->ppn)) * $dt->nilai)}}</td>
                         <td style="text-align: center;">{{number_format($dt->lainnya)}}</td>
-                        <td style="text-align: center;">{{number_format($dt->nilai-($total+(($dt->ppn/100)*$dt->nilai)+(($dt->pph/100)*$dt->nilai)+(($dt->internal/100)*$dt->nilai)+($dt->lainnya)))}}</td>
+                        <td style="text-align: center;">{{number_format($dt->nilai-($total+(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)+(($dt->pph / (100+$dt->ppn)) * $dt->nilai)+(($dt->internal / (100+$dt->ppn)) * $dt->nilai)+($dt->lainnya)))}}</td>
                     </tr>
                     <!-- @if(count($dt->ongkos)>0)
                     <tr>

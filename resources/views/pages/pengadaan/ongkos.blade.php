@@ -3,6 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('plugins_styles')
+<link href="/assets/assets/plugins/parsley/src/parsley.css" rel="stylesheet" />
 @endsection
 
 @section('page_styles')
@@ -112,7 +113,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Jumlah</label>
                                     <div class="input-group">
-                                        <input type="number" name="jumlah" class="form-control" value="0" style="display: block;" required>
+                                        <input onClick="this.select();" type="number" name="jumlah" class="form-control" value="0" style="display: block;" required>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +121,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Harga</label>
                                     <div class="input-group">
-                                        <input type="number" name="harga" class="form-control" value="0" style="display: block;" required>
+                                        <input type="text" autocomplete="off" class="text-right decimal form-control" name="harga" value="0" style="display: block;" required>
                                     </div>
                                 </div>
                             </div>
@@ -186,6 +187,14 @@
 
 @section('plugins_scripts')
 <script src="{{asset('assets/vendors/dataTables/datatables.min.js')}}"></script>
+<script src="/assets/assets/plugins/parsley/dist/parsley.js"></script>
+<script src="/assets/assets/plugins/autonumeric/autoNumeric.js"></script>
+<script>
+      AutoNumeric.multiple('.decimal', {
+        modifyValueOnWheel : false,
+        minimumValue: "0"
+    });
+</script>
 @endsection
 
 @section('page_scripts')

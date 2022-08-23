@@ -53,6 +53,7 @@
                         <th>Nama Perusahaan</th>
                         <th>Nama Pekerjaan</th>
                         <th>Tgl Pekerjaan</th>
+                        <th>Tgl Pembayaran</th>
                         <th>Pemberi Kerja</th>
                         <th>Nilai</th>
                         <th>Ongkos</th>
@@ -150,6 +151,9 @@
                     "data": "tgl"
                 },
                 {
+                    "data": "tgl_pembayaran"
+                },
+                {
                     "data": "pemberi_kerja"
                 },
                 {
@@ -163,7 +167,7 @@
                 },
             ],
             "columnDefs": [{
-                    "targets": 5,
+                    "targets": 6,
                     "data": "nilai",
                     "render": function(data, type, row, meta) {
                         var type = '';
@@ -175,7 +179,7 @@
                     }
                 },
                 {
-                    "targets": 6,
+                    "targets": 7,
                     "data": "ongkos",
                     "render": function(data, type, row, meta) {
                         if (data.length != 0) {

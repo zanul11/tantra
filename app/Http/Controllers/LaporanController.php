@@ -26,6 +26,7 @@ class LaporanController extends Controller
 
         $request->session()->put('dTgl', date('Y-m-d'));
         $request->session()->put('sTgl', date('Y-m-d'));
+        $request->session()->put('tglBayar', date('Y-m-d'));
         $request->session()->put('perusahaan_id', 'Semua');
 
         $perusahaan = Perusahaan::orderby('nama')->get();
@@ -37,12 +38,17 @@ class LaporanController extends Controller
 
         $dTgl = Session::get('dTgl');
         $sTgl = Session::get('sTgl');
+        $tglBayar = Session::get('tglBayar');
         $perusahaan = Session::get('perusahaan_id');
 
         if ($perusahaan == 'Semua') {
-            $data = Pengadaan::with('perusahaan', 'ongkos')->orderby('tgl')->whereBetween('tgl', [$dTgl, $sTgl])->get();
+            // $data = Pengadaan::with('perusahaan', 'ongkos')->orderby('tgl')->whereBetween('tgl', [$dTgl, $sTgl])->get();
+            $data = Pengadaan::with('perusahaan', 'ongkos')->orderby('tgl')->whereDate('tgl_pembayaran', $tglBayar)->get();
+
         } else {
-            $data = Pengadaan::with('perusahaan', 'ongkos')->where('perusahaan_id', $perusahaan)->whereBetween('tgl', [$dTgl, $sTgl])->orderby('tgl')->get();
+            // $data = Pengadaan::with('perusahaan', 'ongkos')->where('perusahaan_id', $perusahaan)->whereBetween('tgl', [$dTgl, $sTgl])->orderby('tgl')->get();
+            $data = Pengadaan::with('perusahaan', 'ongkos')->where('perusahaan_id', $perusahaan)->whereDate('tgl_pembayaran', $tglBayar)->orderby('tgl')->get();
+        
         }
 
         return Datatables::of($data)
@@ -53,22 +59,21 @@ class LaporanController extends Controller
                     $total += ($dt->jumlah * $dt->harga);
                 }
                 return number_format($total);
-            })->addColumn('nilai_ppn', function ($row) {
-                return number_format($row->nilai - (($row->ppn / 100) * $row->nilai));
+            })->addColumn('dpp', function ($row) {
+                return number_format((100/(100+$row->ppn))*$row->nilai);
             })->addColumn('ppns', function ($row) {
-                // return number_format($row->nilai - ((100 / (100 + $row->ppn)) * $row->nilai));
-                return number_format(($row->ppn / 100) * $row->nilai);
+                return number_format(($row->ppn / (100+$row->ppn)) * $row->nilai);
             })->addColumn('pphs', function ($row) {
-                return number_format(($row->pph / 100) * $row->nilai);
+                return number_format(($row->pph / (100+$row->ppn)) * $row->nilai);
             })->addColumn('internals', function ($row) {
-                return number_format(($row->internal / 100) * $row->nilai);
+                return number_format(($row->internal / (100+$row->ppn)) * $row->nilai);
             })->addColumn('sisa', function ($row) {
                 $total = 0;
                 foreach ($row->ongkos as $dt) {
                     $total += ($dt->jumlah * $dt->harga);
                 }
 
-                return number_format($row->nilai - ($total + (($row->ppn / 100) * $row->nilai) + (($row->pph / 100) * $row->nilai) + (($row->internal / 100) * $row->nilai) + $row->lainnya));
+                return number_format($row->nilai - ($total + (($row->ppn / (100+$row->ppn)) * $row->nilai) + (($row->pph / (100+$row->ppn)) * $row->nilai) + (($row->internal / (100+$row->ppn)) * $row->nilai) + $row->lainnya));
             })->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group btn-group-sm" role="group">
                 <a href="/laporan/' . $row->id . '/edit" class="btn btn-primary" style="font-size:12px; color:white;" title="Cetak Data" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>
@@ -82,6 +87,7 @@ class LaporanController extends Controller
     {
         $request->session()->put('dTgl', $request->dTgl);
         $request->session()->put('sTgl', $request->sTgl);
+        $request->session()->put('tglBayar', $request->tglBayar);
         $request->session()->put('perusahaan_id', $request->perusahaan_id);
         $perusahaan = Perusahaan::orderby('nama')->get();
         return view('pages.laporan.index', compact('perusahaan'));

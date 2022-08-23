@@ -44,7 +44,7 @@ class OngkosController extends Controller
             "pengadaan_id" =>  $request->pengadaan_id,
             "nama" =>  $request->nama,
             "jumlah" =>  $request->jumlah,
-            "harga" =>  $request->harga,
+            "harga" =>  str_replace(',', '', $request->harga),
             "user" => Auth::user()->nama,
         ]);
         Alert::success('Success!', 'Data Perusahaan Added!');
