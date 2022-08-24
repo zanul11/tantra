@@ -42,6 +42,17 @@ class PengadaanController extends Controller
             ->make();
     }
 
+
+
+    public function tambahOngkos(Request $req, $id)
+    {
+
+        return view('pages.pengadaan.ongkos_page', [
+            'data' => $req->satuan,
+            'id' => $id
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -62,7 +73,7 @@ class PengadaanController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
+        return $request;
         try {
             $cek = Pengadaan::where('nama_pekerjaan', $request->nama_pekerjaan)->get();
             if (count($cek) > 0) {
@@ -70,7 +81,7 @@ class PengadaanController extends Controller
                 return Redirect::to('/penjaga/create')->withErrors(['Nama Pengadaan tersebut telah digunakan.'])->withInput();
             } else {
                 $pajak = Pajak::first();
-                Pengadaan::create([
+                $save = Pengadaan::create([
                     'nama_pekerjaan' => $request->nama_pekerjaan,
                     'perusahaan_id' => $request->perusahaan_id,
                     'pemberi_kerja' => $request->pemberi_kerja,
@@ -83,6 +94,16 @@ class PengadaanController extends Controller
                     'internal' => $pajak->internal,
                     'user' => Auth::user()->nama,
                 ]);
+
+                foreach ($request->ongkos as $dt) {
+                    Ongkos::create([
+                        "pengadaan_id" =>  $save->id,
+                        "nama" =>  $request->nama,
+                        "jumlah" =>  $request->jumlah,
+                        "harga" =>  str_replace(',', '', $request->harga),
+                        "user" => Auth::user()->nama,
+                    ]);
+                }
             }
             alert()->success('Berhasil Tambah Pengadaan !');
             return Redirect::to('/pengadaan');
@@ -161,6 +182,7 @@ class PengadaanController extends Controller
      */
     public function destroy(Pengadaan $pengadaan)
     {
+        Ongkos::where('pengadaan_id', $pengadaan->id)->delete();
         $pengadaan->delete();
     }
 }

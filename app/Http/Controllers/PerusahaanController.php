@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Pengadaan;
 use App\Perusahaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,7 @@ class PerusahaanController extends Controller
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group btn-group-sm" role="group">
                 <a onclick="showModalsEdit(' . $row->id . ',\'' . $row->nama . '\')" class="btn btn-warning" style="font-size:12px; color:white;">Edit</a>
-            
+                <a onclick="btnDelete(' . $row->id . ')" class="btn btn-danger" style="font-size:12px; color:white;" title="Delete Data">Hapus</a>
             </div>';
                 return $btn;
             })
@@ -124,6 +125,12 @@ class PerusahaanController extends Controller
      */
     public function destroy(Perusahaan $perusahaan)
     {
-        //
+        // return $perusahaan;
+        $cek = Pengadaan::where('perusahaan_id', $perusahaan->id)->first();
+        if (!$cek) {
+            $perusahaan->delete();
+            return 1;
+        }
+        return 0;
     }
 }

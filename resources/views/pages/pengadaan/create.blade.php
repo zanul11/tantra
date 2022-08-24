@@ -47,7 +47,7 @@
                         <div class="form-group">
                             <label class="control-label">Perusahaan</label>
                             <div class="input-group">
-                                <select class="selectpicker show-tick form-control" name="perusahaan_id" data-style="btn-warning" required>
+                                <select class="selectpicker show-tick form-control" name="perusahaan_id" data-style="btn-primary" required>
                                     <option value=''>Pilih Perusahaan</option>
                                     @foreach($perusahaan as $dt)
                                     <option value="{{$dt->id}}" {{ old('perusahaan_id',$pengadaan->perusahaan_id??'')==$dt->id ? 'selected' : '' }}>{{$dt->nama}}</option>
@@ -68,7 +68,7 @@
                         <div class="form-group">
                             <label class="control-label">Nilai</label>
                             <div class="input-group">
-                                <input type="text" autocomplete="off" class="text-right decimal form-control" style="display: block;" value="{{ old('nilai',$pengadaan->nilai??'0') }}" name="nilai" placeholder="Nilai Pekerjaan..." required>
+                                <input type="text" autocomplete="off" class="text-right decimal form-control" style="display: block;" value="{{ old('nilai',$pengadaan->nilai??'') }}" name="nilai" placeholder="Nilai Pekerjaan..." required>
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                         <div class="form-group">
                             <label class="control-label">Lainnya</label>
                             <div class="input-group">
-                                <input type="text" autocomplete="off" class="text-right decimal form-control" style="display: block;" value="{{ old('lainnya',$pengadaan->lainnya??'0') }}" name="lainnya" placeholder="Lainnya Pekerjaan..." required>
+                                <input type="text" autocomplete="off" class="text-right decimal form-control" style="display: block;" value="{{ old('lainnya',$pengadaan->lainnya??'') }}" name="lainnya" placeholder="Lainnya Pekerjaan..." required>
                             </div>
                         </div>
                     </div>
@@ -95,6 +95,42 @@
                                 <input type="date" class="form-control" value="{{ old('tgl_pembayaran',date('Y-m-d',strtotime($pengadaan->tgl_pembayaran??date('d-m-Y')))??date('Y-m-d')) }}" name="tgl_pembayaran" required>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="note bg-grey-transparent-5">
+                            <div class="note-content table-responsive p-l-5 p-r-5">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Ongkos</th>
+                                            <th>Qty</th>
+                                            <th>Harga</th>
+                                            <th>Total</th>
+                                            <th class="width-10"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ongkos">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="3" class="text-right">Total Ongkos/Realisasi : </th>
+                                            <td class="with-btn">
+                                                <input type="text" class="form-control text-right currency" id="sub-total" name="sub-total" value="0" autocomplete="off" readonly />
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <a href="#" class="btn btn-sm btn-warning" onclick="event.preventDefault(); tambah_ongkos()" id="tambah-ongkos">Tambah Ongkos</a>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -117,9 +153,60 @@
 <script src="/assets/assets/plugins/parsley/dist/parsley.js"></script>
 <script src="/assets/assets/plugins/autonumeric/autoNumeric.js"></script>
 <script>
-      AutoNumeric.multiple('.decimal', {
-        modifyValueOnWheel : false,
+    var i = 0;
+    var x = 0;
+    AutoNumeric.multiple('.decimal', {
+        modifyValueOnWheel: false,
         minimumValue: "0"
     });
+    AutoNumeric.multiple('.autonumeric-integer', AutoNumeric.getPredefinedOptions().integerPos);
+
+    var satuan_lain = [];
+
+    satuan_lain.forEach(satuan => {
+        tambah_ongkos(satuan);
+    });
+
+
+    function total_harga_barang(id) {
+        var qty = $("#qty" + id).val() || 0;
+        var harga = parseFloat($("#harga" + id).val().split(',').join('') || 0);
+
+        AutoNumeric.getAutoNumericElement('#total' + id).set(harga * qty);
+    }
+
+    function tambah_ongkos(satuan = null) {
+        $.ajax({
+            url: "/pengadaan/tambah-ongkos/" + i,
+            type: "GET",
+            data: {
+                "satuan": satuan
+            },
+            async: false,
+            success: function(data) {
+                $("#ongkos").append(data);
+                new AutoNumeric('#harga' + i++, {
+                    modifyValueOnWheel: false,
+                    minimumValue: "0"
+                });
+
+                new AutoNumeric('#total' + x++, {
+                    modifyValueOnWheel: false,
+                    minimumValue: "0"
+                });
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Tambah Ongkos!',
+                    text: xhr.responseJSON.message
+                })
+            }
+        });
+    }
+
+    function hapus_ongkos(id) {
+        $("#" + id).remove();
+    }
 </script>
 @endsection

@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('perusahaan', 'PerusahaanController');
     Route::resource('pajak', 'PajakController');
 
+    Route::get('/pengadaan/tambah-ongkos/{id}', 'PengadaanController@tambahOngkos');
     Route::get('ss-pengadaan', 'PengadaanController@getServerSide')->name('ss.pengadaan');
     Route::resource('pengadaan', 'PengadaanController');
     Route::resource('ongkos', 'OngkosController');

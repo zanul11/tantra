@@ -33,7 +33,7 @@
             </center>
             <br>
             <center>
-                <table class="table table-hover table-bordered table-responsive">
+                <table style="border-collapse: collapse; width: 100%; font-size:12px;" border="1" padding="15px">
                     <tr>
                         <td style="text-align: center;" width="3%"><b>No.</b></td>
                         <td style="text-align: center;"><b>Nama Perusahaan</b></td>

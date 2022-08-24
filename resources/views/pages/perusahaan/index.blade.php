@@ -138,6 +138,54 @@
 @section('plugins_scripts')
 <script src="{{asset('assets/vendors/dataTables/datatables.min.js')}}"></script>
 <script>
+    function btnDelete(kode) {
+        Swal.fire({
+            title: "Yakin?",
+            text: "Anda akan menghapus data ini?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yas, Hapus!"
+        }).then(result => {
+            if (result.value) {
+                $.ajax({
+                    url: "/perusahaan/" + kode,
+                    type: "DELETE",
+
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response == 1) {
+                            Swal.fire(
+                                "Deleted!",
+                                "Data berhasil dihapus",
+                                "success"
+                            ).then(result => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Data gagal dihapus, terdapat data pengadaan atas nama perusahaan tersebut!",
+                                "warning"
+                            ).then(result => {
+                                // location.reload();
+                            });
+                        }
+
+                        // You will get response from your PHP page (what you echo or print)
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+            }
+        });
+    }
+
     function showModalsAdd() {
 
         $('#modal-add').modal({
