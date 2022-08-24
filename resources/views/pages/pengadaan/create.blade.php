@@ -165,7 +165,7 @@
         minimumValue: "0"
     });
 
-    var data_ongkos = <?php echo json_encode($pengadaan->ongkos??[]); ?> || [];
+    var data_ongkos = <?php echo json_encode($pengadaan->ongkos ?? []); ?> || [];
 
     data_ongkos.forEach(ongkos_dt => {
         console.log(ongkos_dt.harga);
@@ -224,6 +224,7 @@
 
     function hapus_ongkos(id) {
         $("#" + id).remove();
+        sub_total();
     }
 </script>
 @endsection
