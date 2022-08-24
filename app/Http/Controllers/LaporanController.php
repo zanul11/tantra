@@ -124,15 +124,17 @@ class LaporanController extends Controller
     {
         $dTgl = Session::get('dTgl');
         $sTgl = Session::get('sTgl');
+        $tglBayar = Session::get('tglBayar');
         $perusahaan = Session::get('perusahaan_id');
         $data = null;
 
 
         if ($perusahaan == 'Semua') {
-            $data = Pengadaan::with('perusahaan', 'ongkos')->orderby('tgl')->whereBetween('tgl', [$dTgl, $sTgl])->get();
+            $data = Pengadaan::with('perusahaan', 'ongkos')->orderby('tgl')->whereDate('tgl_pembayaran', $tglBayar)->get();
         } else {
-            $data = Pengadaan::with('perusahaan', 'ongkos')->where('perusahaan_id', $perusahaan)->whereBetween('tgl', [$dTgl, $sTgl])->orderby('tgl')->get();
+            $data = Pengadaan::with('perusahaan', 'ongkos')->where('perusahaan_id', $perusahaan)->whereDate('tgl_pembayaran', $tglBayar)->orderby('tgl')->get();
         }
+        // return $data;
         return view('pages.laporan.cetak', compact('data'));
     }
 

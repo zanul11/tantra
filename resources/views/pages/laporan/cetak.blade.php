@@ -21,11 +21,16 @@
                 -webkit-print-color-adjust: exact;
             }
         }
+        @page { 
+        size: landscape;
+    }
+
+</style>
     </style>
 </head>
 
-<body class="view mahasiswa halaman" onload="cetak()">
-    <div class="container-fluid cetak krs">
+<body class="view mahasiswa " onload="cetak()">
+    <div class="container-fluid cetak">
         <div class="row">
 
             <center>
@@ -35,19 +40,19 @@
             <center>
                 <table style="border-collapse: collapse; width: 100%; font-size:12px;" border="1" padding="15px">
                     <tr>
-                        <td style="text-align: center;" width="3%"><b>No.</b></td>
-                        <td style="text-align: center;"><b>Nama Perusahaan</b></td>
-                        <td style="text-align: center;"><b>Nama Pekerjaan</b></td>
-                        <td style="text-align: center;"><b>Tgl Pekerjaan</b></td>
-                        <td style="text-align: center;"><b>Pemberi Kerja</b></td>
-                        <td style="text-align: center;"><b>Nilai</b></td>
-                        <td style="text-align: center;"><b>Ongkos</b></td>
-                        <td style="text-align: center;"><b>DPP</b></td>
-                        <td style="text-align: center;"><b>PPN</b></td>
-                        <td style="text-align: center;"><b>PPH</b></td>
-                        <td style="text-align: center;"><b>Internal</b></td>
-                        <td style="text-align: center;"><b>Lainnya</b></td>
-                        <td style="text-align: center;"><b>Sisa</b></td>
+                        <td style="text-align: center; padding: 5px;" width="3%"><b>No.</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Nama Perusahaan</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Nama Pekerjaan</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Tgl Pekerjaan</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Pemberi Kerja</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Nilai</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Ongkos</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>DPP</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>PPN</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>PPH</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Internal</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Lainnya</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Sisa</b></td>
                     </tr>
                     @foreach($data as $dt)
                     @php
@@ -60,20 +65,20 @@
                     @endforeach
 
                     <tr>
-                        <td style="text-align: center;" width="3%">{{$loop->iteration}}</td>
-                        <td style="text-align: center;">{{$dt->perusahaan->nama}}</td>
-                        <td style="text-align: center;">{{$dt->nama_pekerjaan}}</td>
-                        <td style="text-align: center;">{{date('d-m-Y',strtotime($dt->tgl))}}</td>
-                        <td style="text-align: center;">{{$dt->pemberi_kerja}}</td>
-                        <td style="text-align: center;">{{number_format($dt->nilai)}}</td>
+                        <td style="text-align: center;  padding: 5px;" width="3%">{{$loop->iteration}}</td>
+                        <td style="text-align: center; padding: 5px;">{{$dt->perusahaan->nama}}</td>
+                        <td style="text-align: center; padding: 5px;">{{$dt->nama_pekerjaan}}</td>
+                        <td style="text-align: center; padding: 5px;">{{date('d-m-Y',strtotime($dt->tgl))}}</td>
+                        <td style="text-align: center; padding: 5px;">{{$dt->pemberi_kerja}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format($dt->nilai)}}</td>
 
-                        <td style="text-align: center;">{{number_format($total)}}</td>
-                        <td style="text-align: center;">{{number_format((100/(100+$dt->ppn))*$dt->nilai)}}</td>
-                        <td style="text-align: center;">{{number_format(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)}}</td>
-                        <td style="text-align: center;">{{number_format(($dt->pph / (100+$dt->ppn)) * $dt->nilai)}}</td>
-                        <td style="text-align: center;">{{number_format(($dt->internal / (100+$dt->ppn)) * $dt->nilai)}}</td>
-                        <td style="text-align: center;">{{number_format($dt->lainnya)}}</td>
-                        <td style="text-align: center;">{{number_format($dt->nilai-($total+(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)+(($dt->pph / (100+$dt->ppn)) * $dt->nilai)+(($dt->internal / (100+$dt->ppn)) * $dt->nilai)+($dt->lainnya)))}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format($total)}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format((100/(100+$dt->ppn))*$dt->nilai)}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format(($dt->pph / (100+$dt->ppn)) * $dt->nilai)}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format(($dt->internal / (100+$dt->ppn)) * $dt->nilai)}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format($dt->lainnya)}}</td>
+                        <td style="text-align: center; padding: 5px;">{{number_format($dt->nilai-($total+(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)+(($dt->pph / (100+$dt->ppn)) * $dt->nilai)+(($dt->internal / (100+$dt->ppn)) * $dt->nilai)+($dt->lainnya)))}}</td>
                     </tr>
                     <!-- @if(count($dt->ongkos)>0)
                     <tr>

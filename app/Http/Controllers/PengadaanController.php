@@ -28,13 +28,17 @@ class PengadaanController extends Controller
 
     public function getServerSide()
     {
-        $data = Pengadaan::with('perusahaan', 'ongkos')->get();
+        $data = Pengadaan::with('perusahaan', 'ongkos')->orderby('tgl', 'desc')->get();
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
+                // $btn = '<div class="btn-group btn-group-sm" role="group">
+                // <a href="/pengadaan/' . $row->id . '" class="btn btn-primary" style="font-size:12px; color:white;" title="Add Ongkos"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                // <a href="/pengadaan/' . $row->id . '/edit" class="btn btn-warning" style="font-size:12px; color:white;" title="Edit Data"><i class="fa fa-italic" aria-hidden="true"></i></a>
+                // <a onclick="btnDelete(' . $row->id . ')" class="btn btn-danger" style="font-size:12px; color:white;" title="Delete Data"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                // </div>';
                 $btn = '<div class="btn-group btn-group-sm" role="group">
-                <a href="/pengadaan/' . $row->id . '" class="btn btn-primary" style="font-size:12px; color:white;" title="Add Ongkos"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                <a href="/pengadaan/' . $row->id . '/edit" class="btn btn-warning" style="font-size:12px; color:white;" title="Edit Data"><i class="fa fa-italic" aria-hidden="true"></i></a>
+                <a href="/pengadaan/' . $row->id . '/edit" class="btn btn-warning" style="font-size:12px; color:white;" title="Edit Data"><i class="fa fa-i-cursor" aria-hidden="true"></i></a>
                 <a onclick="btnDelete(' . $row->id . ')" class="btn btn-danger" style="font-size:12px; color:white;" title="Delete Data"><i class="fa fa-trash" aria-hidden="true"></i></a>
                 </div>';
                 return $btn;
@@ -73,7 +77,7 @@ class PengadaanController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
+        // return $request;
         try {
             $cek = Pengadaan::where('nama_pekerjaan', $request->nama_pekerjaan)->get();
             if (count($cek) > 0) {
@@ -81,7 +85,9 @@ class PengadaanController extends Controller
                 return Redirect::to('/penjaga/create')->withErrors(['Nama Pengadaan tersebut telah digunakan.'])->withInput();
             } else {
                 $pajak = Pajak::first();
+                $kode = time();
                 $save = Pengadaan::create([
+                    'kode' => $kode,
                     'nama_pekerjaan' => $request->nama_pekerjaan,
                     'perusahaan_id' => $request->perusahaan_id,
                     'pemberi_kerja' => $request->pemberi_kerja,
@@ -97,10 +103,10 @@ class PengadaanController extends Controller
 
                 foreach ($request->ongkos as $dt) {
                     Ongkos::create([
-                        "pengadaan_id" =>  $save->id,
-                        "nama" =>  $request->nama,
-                        "jumlah" =>  $request->jumlah,
-                        "harga" =>  str_replace(',', '', $request->harga),
+                        "kode" =>  $kode,
+                        "nama" =>  $dt['nama'],
+                        "jumlah" =>  $dt['jumlah'],
+                        "harga" =>  str_replace(',', '', $dt['harga']),
                         "user" => Auth::user()->nama,
                     ]);
                 }
@@ -135,6 +141,7 @@ class PengadaanController extends Controller
      */
     public function edit(Pengadaan $pengadaan)
     {
+        
         $action = 'edit';
         $perusahaan = Perusahaan::orderby('nama')->get();
         return view('pages.pengadaan.create', compact('action', 'perusahaan', 'pengadaan'));
@@ -149,7 +156,7 @@ class PengadaanController extends Controller
      */
     public function update(Request $request, Pengadaan $pengadaan)
     {
-        // return $pengadaan;
+        // return $request;
         try {
             $pajak = Pajak::first();
             Pengadaan::where('id', $pengadaan->id)->update([
@@ -165,6 +172,18 @@ class PengadaanController extends Controller
                 'internal' => $pajak->internal,
                 'user' => Auth::user()->nama,
             ]);
+
+            Ongkos::where('kode', $pengadaan->kode)->delete();
+
+            foreach ($request->ongkos as $dt) {
+                Ongkos::create([
+                    "kode" =>   $pengadaan->kode,
+                    "nama" =>  $dt['nama'],
+                    "jumlah" =>  $dt['jumlah'],
+                    "harga" =>  str_replace(',', '', $dt['harga']),
+                    "user" => Auth::user()->nama,
+                ]);
+            }
 
             alert()->success('Berhasil Update Pengadaan !');
             return Redirect::to('/pengadaan');
@@ -182,7 +201,7 @@ class PengadaanController extends Controller
      */
     public function destroy(Pengadaan $pengadaan)
     {
-        Ongkos::where('pengadaan_id', $pengadaan->id)->delete();
+        Ongkos::where('kode', $pengadaan->kode)->delete();
         $pengadaan->delete();
     }
 }

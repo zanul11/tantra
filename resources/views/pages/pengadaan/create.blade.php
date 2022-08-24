@@ -39,7 +39,7 @@
                         <div class="form-group">
                             <label class="control-label">Nama Pekerjaan</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" style="display: block;" value="{{ old('nama_pekerjaaan',$pengadaan->nama_pekerjaan??'') }}" name="nama_pekerjaan" placeholder="Nama Pekerjaan..." required>
+                                <input type="text" autocomplete="off" class="form-control" style="display: block;" value="{{ old('nama_pekerjaan',$pengadaan->nama_pekerjaan??'') }}" name="nama_pekerjaan" placeholder="Nama Pekerjaan..." required>
                             </div>
                         </div>
                     </div>
@@ -155,16 +155,23 @@
 <script>
     var i = 0;
     var x = 0;
+    var y = 0;
     AutoNumeric.multiple('.decimal', {
         modifyValueOnWheel: false,
         minimumValue: "0"
     });
-    AutoNumeric.multiple('.autonumeric-integer', AutoNumeric.getPredefinedOptions().integerPos);
+    new AutoNumeric('#sub-total', {
+        modifyValueOnWheel: false,
+        minimumValue: "0"
+    });
 
-    var satuan_lain = [];
+    var data_ongkos = <?php echo json_encode($pengadaan->ongkos??[]); ?> || [];
 
-    satuan_lain.forEach(satuan => {
-        tambah_ongkos(satuan);
+    data_ongkos.forEach(ongkos_dt => {
+        console.log(ongkos_dt.harga);
+        tambah_ongkos(ongkos_dt);
+        total_harga_barang(y);
+        y++;
     });
 
 
@@ -173,6 +180,16 @@
         var harga = parseFloat($("#harga" + id).val().split(',').join('') || 0);
 
         AutoNumeric.getAutoNumericElement('#total' + id).set(harga * qty);
+        sub_total();
+    }
+
+    function sub_total() {
+        var sub_total = 0;
+        $('.total-harga-barang').each(function(i, obj) {
+            if (this.value)
+                sub_total += parseFloat(this.value.split(',').join('') || 0);
+        });
+        AutoNumeric.getAutoNumericElement('#sub-total').set(sub_total);
     }
 
     function tambah_ongkos(satuan = null) {

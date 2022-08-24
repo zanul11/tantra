@@ -15,6 +15,6 @@ class Pengadaan extends Model
     }
     public function ongkos()
     {
-        return $this->hasMany(Ongkos::class, 'pengadaan_id');
+        return $this->hasMany(Ongkos::class, 'kode', 'kode');
     }
 }
