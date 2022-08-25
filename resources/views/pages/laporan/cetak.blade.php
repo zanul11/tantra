@@ -21,11 +21,11 @@
                 -webkit-print-color-adjust: exact;
             }
         }
-        @page { 
-        size: landscape;
-    }
 
-</style>
+        @page {
+            size: landscape;
+        }
+    </style>
     </style>
 </head>
 
@@ -43,7 +43,8 @@
                         <td style="text-align: center; padding: 5px;" width="3%"><b>No.</b></td>
                         <td style="text-align: center; padding: 5px;"><b>Nama Perusahaan</b></td>
                         <td style="text-align: center; padding: 5px;"><b>Nama Pekerjaan</b></td>
-                        <td style="text-align: center; padding: 5px;"><b>Tgl Pekerjaan</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Tgl Kerja</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>Tgl Bayar</b></td>
                         <td style="text-align: center; padding: 5px;"><b>Pemberi Kerja</b></td>
                         <td style="text-align: center; padding: 5px;"><b>Nilai</b></td>
                         <td style="text-align: center; padding: 5px;"><b>Ongkos</b></td>
@@ -54,6 +55,16 @@
                         <td style="text-align: center; padding: 5px;"><b>Lainnya</b></td>
                         <td style="text-align: center; padding: 5px;"><b>Sisa</b></td>
                     </tr>
+                    @php
+                    $total_nilai=0;
+                    $total_ongkos=0;
+                    $total_dpp=0;
+                    $total_ppn=0;
+                    $total_pph=0;
+                    $total_internal=0;
+                    $total_lainnya=0;
+                    $total_sisa=0;
+                    @endphp
                     @foreach($data as $dt)
                     @php
                     $total=0;
@@ -69,6 +80,7 @@
                         <td style="text-align: center; padding: 5px;">{{$dt->perusahaan->nama}}</td>
                         <td style="text-align: center; padding: 5px;">{{$dt->nama_pekerjaan}}</td>
                         <td style="text-align: center; padding: 5px;">{{date('d-m-Y',strtotime($dt->tgl))}}</td>
+                        <td style="text-align: center; padding: 5px;">{{date('d-m-Y',strtotime($dt->tgl_pembayaran))}}</td>
                         <td style="text-align: center; padding: 5px;">{{$dt->pemberi_kerja}}</td>
                         <td style="text-align: center; padding: 5px;">{{number_format($dt->nilai)}}</td>
 
@@ -79,6 +91,29 @@
                         <td style="text-align: center; padding: 5px;">{{number_format(($dt->internal / (100+$dt->ppn)) * $dt->nilai)}}</td>
                         <td style="text-align: center; padding: 5px;">{{number_format($dt->lainnya)}}</td>
                         <td style="text-align: center; padding: 5px;">{{number_format($dt->nilai-($total+(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)+(($dt->pph / (100+$dt->ppn)) * $dt->nilai)+(($dt->internal / (100+$dt->ppn)) * $dt->nilai)+($dt->lainnya)))}}</td>
+                    </tr>
+                    @php
+                    $total_nilai+=$dt->nilai;
+                    $total_ongkos+=$total;
+                    $total_dpp+=((100/(100+$dt->ppn))*$dt->nilai);
+                    $total_ppn+=(($dt->ppn / (100+$dt->ppn)) * $dt->nilai);
+                    $total_pph+=($dt->pph / (100+$dt->ppn)) * $dt->nilai;
+                    $total_internal+=($dt->internal / (100+$dt->ppn)) * $dt->nilai;
+                    $total_lainnya+=$dt->lainnya;
+                    $total_sisa+=$dt->nilai-($total+(($dt->ppn / (100+$dt->ppn)) * $dt->nilai)+(($dt->pph / (100+$dt->ppn)) * $dt->nilai)+(($dt->internal / (100+$dt->ppn)) * $dt->nilai)+($dt->lainnya));
+                    @endphp
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 5px;"><b>Total</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_nilai)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_ongkos)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_dpp)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_ppn)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_pph)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_internal)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_lainnya)}}</b></td>
+                        <td style="text-align: center; padding: 5px;"><b>{{number_format($total_sisa)}}</b></td>
+
+
                     </tr>
                     <!-- @if(count($dt->ongkos)>0)
                     <tr>
@@ -100,7 +135,7 @@
 
     <script type="text/javascript">
         function cetak() {
-            window.print();
+            // window.print();
         };
     </script>
 

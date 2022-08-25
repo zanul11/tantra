@@ -41,9 +41,14 @@
                                 <td style="width: 337.102px;">&nbsp;{{$data->nama_pekerjaan}}</td>
                             </tr>
                             <tr style="height: 25px;">
-                                <td style="width: 162.557px;">Tanggal</td>
+                                <td style="width: 162.557px;">Tgl Kerja</td>
                                 <td style="width: 9.82955px;">:</td>
-                                <td style="width: 337.102px;">&nbsp;{{$data->tgl}}</td>
+                                <td style="width: 337.102px;">&nbsp;{{date('d-m-Y',strtotime($data->tgl))}}</td>
+                            </tr>
+                            <tr style="height: 25px;">
+                                <td style="width: 162.557px;">Tgl Bayar</td>
+                                <td style="width: 9.82955px;">:</td>
+                                <td style="width: 337.102px;">&nbsp;{{date('d-m-Y',strtotime($data->tgl_pembayaran))}}</td>
                             </tr>
                             <tr style="height: 25px;">
                                 <td style="width: 162.557px;">Pemberi Kerja</td>
@@ -63,8 +68,8 @@
             $total=0;
             @endphp
             <tr style="height: 45px; ">
-                <td style="width: 100%; height: 45px; ">
-                    <table style="border-collapse: collapse; width: 100%; font-size:12px;" border="1" padding="200px">
+                <td style="width: 100%; height: 45px; padding-left: 10px;padding-right: 10px;">
+                    <table style="border-collapse: collapse; width: 100%; font-size:12px; margin-top: 20px;" border="1" padding="200px">
                         <tbody>
                             <tr>
                                 <td colspan="6"><b>ONGKOS PEKERJAAN</b></td>
